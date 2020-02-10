@@ -5,6 +5,7 @@ import android.os.Bundle
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.weatherapp.R
+import com.example.weatherapp.adapters.ForecastListAdapter
 
 class MainActivity : AppCompatActivity() {
 
@@ -24,5 +25,6 @@ class MainActivity : AppCompatActivity() {
 
         val forecastList = findViewById<RecyclerView>(R.id.forecast_list)
         forecastList.layoutManager = LinearLayoutManager(this)
+        forecastList.adapter = ForecastListAdapter(items)
     }
 }
