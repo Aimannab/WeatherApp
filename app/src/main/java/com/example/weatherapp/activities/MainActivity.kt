@@ -3,19 +3,19 @@ package com.example.weatherapp.activities
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
-import android.widget.Toast
-import androidx.annotation.UiThread
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.weatherapp.R
 import com.example.weatherapp.adapters.ForecastListAdapter
+import com.example.weatherapp.data.ForecastRequest
+import com.example.weatherapp.domain.commands.RequestForecastCommand
 import okhttp3.*
 import java.io.IOException
 
 class MainActivity : AppCompatActivity() {
 
     private val client = OkHttpClient()
-    private val RESPONSE_TAG = "RESPONSE"
+    private val RESPONSETAG = "RESPONSE"
 
     private val items = listOf(
         "Mon 6/23 - Sunny - 31/17",
@@ -27,15 +27,17 @@ class MainActivity : AppCompatActivity() {
         "Sun 6/29 - Sunny - 20/7"
     )
 
+    private val request = RequestForecastCommand("94043").execute()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        run("http://api.openweathermap.org/data/2.5/forecast/daily?APPID=15646a06818f61f7b8d7823ca833e1ce&zip=94043&mode=json&units=metric&cnt=7")
+        //run("http://api.openweathermap.org/data/2.5/forecast/daily?APPID=15646a06818f61f7b8d7823ca833e1ce&zip=94043&mode=json&units=metric&cnt=7")
 
         val forecastList = findViewById<RecyclerView>(R.id.forecast_list)
         forecastList.layoutManager = LinearLayoutManager(this)
-        forecastList.adapter = ForecastListAdapter(items)
+        forecastList.adapter = ForecastListAdapter(request)
     }
 
     private fun run(url: String) {
@@ -44,7 +46,7 @@ class MainActivity : AppCompatActivity() {
         client.newCall(request).enqueue(object : Callback {
             override fun onResponse(call: Call, response: Response) {
                 println(response.body()?.string())
-                Log.d(RESPONSE_TAG,"Response successful")
+                Log.d(RESPONSETAG,"Response successful")
             }
 
             override fun onFailure(call: Call, e: IOException) {}
